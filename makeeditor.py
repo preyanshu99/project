@@ -1,35 +1,157 @@
-"""This is a editor to creating file and stored in specified location by User."""
-import time
-import os
-import random
-os.system("cls")
-os.system("color 3")
-print("\n\t\t\t-#-#-Welcome To The Make Editor-#-#-")
-print("\n\t\t\tInstruction Read Carefully:")
-s="""
-			1.Enter data line by line
-			2.For Finish file type eof
-			3.After Finishing Specify the file name either with location which is not mandatory
-"""
-print(s)
-time.sleep(10)
-os.system("cls")
-print("\n\t\t\t#####Let's Write Content Carefully#####")
-para=''
-print("\n\n\t\t\t-*-*-Enter Line By Line-*-*-")
-time.sleep(2)
-os.system("cls")
-while True:
-	string=input()
-	if string.strip().lower()=='eof':
-		break
-	para=para+string+'\n'
-file=input("Enter File Name(location not mandatory):")
-if os.path.exists(file) or os.path.exists(file+'.txt'):
-	file=file+str(random.randint(100,99999999))
-if file.find('.')==-1:
-	file+='.txt'
-f=open(file,"w")
-f.write(para)
-print(f"\n\t\tFile {file} Successfully Created")
-f.close()
+from tkinter import *
+from tkinter import filedialog
+fonttype="Helvatica"
+fontsize=16
+#Fonts############################
+def fontHelvetica():
+	global text,fonttype,fontsize
+	text.config(font=("Helvetica",fontsize))
+	fonttype="Helvatica"
+
+def fontArial():
+	global text,fonttype,fontsize
+	text.config(font=("Arial",fontsize))
+	fonttype="Arial"
+
+def fontTNR():
+	global text,fonttype,fontsize
+	text.config(font=("Times New Roman",fontsize))
+	fonttype="Times New Roman"
+
+def fontGothic():
+	global text,fonttype,fontsize
+	text.config(font=("Gothic",fontsize))
+	fonttype="Gothic"
+
+#Hotkeys
+def newFileHK(self):
+	global filename
+	filename = "Untitled"
+	text.delete(0.0, END)
+
+def saveFileHK(self):
+	global filename
+	if filename == None:
+		saveAs(self)
+	else:
+		t = text.get(0.0, END)
+		f = open(filename, "w")
+		f.write(t)
+		f.close()
+
+def saveAsHK(self):
+	f = filedialog.asksaveasfile(mode='w',defaultextension='.txt')
+	t = text.get(0.0, END)
+	try:
+		f.write(t.rstrip())
+	except:
+		showerror(title ="UPS", message="Could not save file")
+
+def openFileHK(self):
+	f = filedialog.askopenfile(mode='r')
+	t = f.read()
+	text.delete(0.0, END)
+	text.insert(0.0, t)
+
+#Loops commands
+filename = None
+
+def newFile():
+	global filename
+	filename = "Untitled"
+	text.delete(0.0, END)
+
+def saveFile():
+	global filename
+	if filename == None:
+		saveAs(self)
+	else:
+		t = text.get(0.0, END)
+		f = open(filename, "w")
+		f.write(t)
+		f.close()
+
+def saveAs():
+	f = filedialog.asksaveasfile(mode='w',defaultextension='.txt')
+	t = text.get(0.0, END)
+	try:
+		f.write(t.rstrip())
+	except:
+		showerror(title ="UPS", message="Could not save file")
+
+def openFile():
+	f = filedialog.askopenfile(mode='r')
+	t = f.read()
+	text.delete(0.0, END)
+	text.insert(0.0, t)
+	
+def size16():
+	global text,fonttype,fontsize
+	text.config(font=(fonttype,16))
+	fontsize=16
+	
+def size18():
+	global text,fonttype,fontsize
+	text.config(font=(fonttype,18))
+	fontsize=18
+	
+def size20():
+	global text,fonttype,fontsize
+	text.config(font=(fonttype,20))
+	fontsize=20
+
+def size22():
+	global text,fonttype,fontsize
+	text.config(font=(fonttype,22))
+	fontsize=22
+######################################################################
+
+#Main GUI
+root = Tk()
+root.title("Make File Editor")
+root.minsize(width=500, height=400)
+root.maxsize(width=root.winfo_screenwidth(),height=root.winfo_screenheight())
+text = Text(root, width=500, height=500)
+text.pack()
+
+###############################################################################
+menubar = Menu(root)
+filemenu = Menu(menubar)
+filemenu.add_command(label="New", command=newFile, accelerator="Ctrl+N")
+filemenu.add_command(label="Open", command=openFile, accelerator="Ctrl+O")
+filemenu.add_command(label="Save", command=saveFile, accelerator="Ctrl+S")
+filemenu.add_command(label="Save as...", command=saveAs, accelerator="Ctrl+B")
+filemenu.add_separator()
+filemenu.add_command(label="Quit", command=root.quit, accelerator="Ctrl+Q")
+menubar.add_cascade(label="File", menu=filemenu)
+###############################################################################
+
+#####Hot-Keys#######################
+root.bind("<Control-n>", newFileHK)
+root.bind("<Control-o>", openFileHK)
+root.bind("<Control-s>", saveFileHK)
+root.bind("<Control-b>", saveAsHK)
+root.bind("<Control-q>", quit)
+####################################
+
+###################################################################
+formatOptions = Menu(menubar)
+formatOptions.add_command(label="Arial", command=fontArial)
+formatOptions.add_command(label="Helvetica", command=fontHelvetica)
+formatOptions.add_command(label="Times New Roman", command=fontTNR)
+formatOptions.add_command(label="Gothic", command=fontGothic)
+menubar.add_cascade(label="Font", menu=formatOptions)
+###################################################################
+
+###################################################################
+sizeOptions = Menu(menubar)
+sizeOptions.add_command(label="16", command=size16)
+sizeOptions.add_command(label="18", command=size18)
+sizeOptions.add_command(label="20", command=size20)
+sizeOptions.add_command(label="22", command=size22)
+menubar.add_cascade(label="Size", menu=sizeOptions)
+###################################################################
+
+root.config(menu=menubar)
+root.mainloop()
+

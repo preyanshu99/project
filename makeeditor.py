@@ -104,6 +104,33 @@ def size22():
 	global text,fonttype,fontsize
 	text.config(font=(fonttype,22))
 	fontsize=22
+	
+def bgwhite():
+	global text
+	text.config(bg='white')
+	
+def bgblack():
+	global text
+	text.config(bg='black')
+	
+def bggray():
+	global text
+	text.config(bg='gray')
+	
+def fgblue():
+	global text
+	text.config(fg='blue')
+
+def fggreen():
+	global text
+	text.config(fg='green')
+
+def fgorange():
+	global text
+	text.config(fg='orange')
+
+	
+
 ######################################################################
 
 #Main GUI
@@ -111,7 +138,7 @@ root = Tk()
 root.title("Make File Editor")
 root.minsize(width=500, height=400)
 root.maxsize(width=root.winfo_screenwidth(),height=root.winfo_screenheight())
-text = Text(root, width=500, height=500)
+text = Text(root, width=500, height=500,fg='blue',bg='white')
 text.pack()
 
 ###############################################################################
@@ -150,6 +177,22 @@ sizeOptions.add_command(label="18", command=size18)
 sizeOptions.add_command(label="20", command=size20)
 sizeOptions.add_command(label="22", command=size22)
 menubar.add_cascade(label="Size", menu=sizeOptions)
+###################################################################
+
+###################################################################
+backgroundOptions = Menu(menubar)
+backgroundOptions.add_command(label="white", command=bgwhite)
+backgroundOptions.add_command(label="black", command=bgblack)
+backgroundOptions.add_command(label="gray", command=bggray)
+menubar.add_cascade(label="Background", menu=backgroundOptions)
+###################################################################
+
+###################################################################
+forgroundOptions = Menu(menubar)
+forgroundOptions.add_command(label="blue", command=fgblue)
+forgroundOptions.add_command(label="green", command=fggreen)
+forgroundOptions.add_command(label="orange", command=fgorange)
+menubar.add_cascade(label="Color", menu=forgroundOptions)
 ###################################################################
 
 root.config(menu=menubar)

@@ -24,13 +24,12 @@ class makeeditor(Frame):
 
 	#Hotkeys
 	def newFileHK(self):
-		self.filename=None
 		text.delete(0.0, END)
+		self.filename=None
 
 	def saveFileHK(self):
-		global filename
 		if self.filename == None:
-			saveAsHK()
+			self.saveAsHK()
 		else:
 			t = text.get(0.0, END)
 			f = open(self.filename, "w")
@@ -44,15 +43,17 @@ class makeeditor(Frame):
 			f.write(t.rstrip())
 			f.close()
 		except:
-			showerror(title ="UPS", message="Could not save file")
+			showerror(title ="File Selection Error", message="Could not save file")
 
 	def openFileHK(self):
 		f = filedialog.askopenfile(mode='r')
-		t = f.read()
-		f.close()
-		text.delete(0.0, END)
-		text.insert(0.0, t)
-
+		try:
+			t = f.read()
+			f.close()
+			text.delete(0.0, END)
+			text.insert(0.0, t)
+		except:
+			pass
 	#Loops commands
 
 	def newFile(self):
@@ -61,20 +62,20 @@ class makeeditor(Frame):
 
 	def saveFile(self):
 		if self.filename == None:
-			saveAs()
+			self.saveAs()
 		else:
 			t = text.get(0.0, END)
 			f = open(self.filename, "w")
 			f.write(t)
 			f.close()
 
-	def saveAs(self,*args):
+	def saveAs(self):
 		f = filedialog.asksaveasfile(mode='w',defaultextension='.txt')
 		t = text.get(0.0, END)
 		try:
 			f.write(t.rstrip())
 		except:
-			showerror(title ="UPS", message="Could not save file")
+			showerror(title ="File Selection Error", message="Could not save file")
 
 	def openFile(self):
 		f = filedialog.askopenfile(mode='r')
@@ -85,6 +86,9 @@ class makeeditor(Frame):
 		except:
 			pass
 		
+		
+	def quit(self):
+		root.destroy()
 		
 	def size16(self):
 		text.config(font=(self.fonttype,16))
@@ -133,11 +137,11 @@ class makeeditor(Frame):
 		###############################################################################
 
 		#####Hot-Keys#######################
-		root.bind("<Control-n>", self.newFileHK)
-		root.bind("<Control-o>", self.openFileHK)
-		root.bind("<Control-s>", self.saveFileHK)
-		root.bind("<Control-b>", self.saveAsHK)
-		root.bind("<Control-q>", self.quit)
+		root.bind("<Control-n>", lambda event:self.newFileHK())
+		root.bind("<Control-o>", lambda event:self.openFileHK())
+		root.bind("<Control-s>", lambda event:self.saveFileHK())
+		root.bind("<Control-b>", lambda event:self.saveAsHK())
+		root.bind("<Control-q>", lambda event:self.quit())
 		####################################
 
 		###################################################################
@@ -179,8 +183,12 @@ root = Tk()
 root.title("Make File Editor")
 root.minsize(width=500, height=400)
 root.maxsize(width=root.winfo_screenwidth(),height=root.winfo_screenheight())
+xaxis=Scrollbar(root,orient="horizontal")
+yaxis=Scrollbar(root,orient="vertical")
 text = Text(root, width=500, height=500,fg="blue",font=("Helvatica",16))
-text.pack()
+xaxis.pack(side=BOTTOM, fill=Y)
+yaxis.pack(side=RIGHT, fill=Y)
+text.pack(side=LEFT,fill=Y)
+text.config(xscrollcommand=xaxis.set,yscrollcommand=yaxis.set)
 master=makeeditor(root)	
 root.mainloop()
-
